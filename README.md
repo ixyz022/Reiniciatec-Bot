@@ -1,5 +1,3 @@
-Claro, aquí tienes una estructura básica para un archivo README en Git, que incluye secciones comunes, incluyendo los agradecimientos:
-
 # Nombre del Proyecto
 
 Breve descripción o resumen del proyecto.
@@ -9,6 +7,7 @@ Breve descripción o resumen del proyecto.
 - [Instalación](#instalación)
 - [Uso](#uso)
 - [Contribución](#contribución)
+- [Documentación](#documentación)
 - [Créditos](#créditos)
 - [Licencia](#licencia)
 
@@ -23,6 +22,10 @@ Explicación detallada de cómo utilizar el proyecto. Puedes proporcionar ejempl
 ## Contribución
 
 Información sobre cómo los usuarios pueden contribuir al proyecto. Puedes incluir directrices sobre cómo realizar solicitudes de extracción, informar problemas o sugerir nuevas características.
+
+## Documentación
+
+Enlace a la documentación completa del proyecto. Puedes proporcionar enlaces a la documentación en línea, como wikis, guías de usuario o referencias técnicas.
 
 ## Créditos
 
@@ -40,4 +43,4 @@ Expresa tus agradecimientos a las personas o recursos adicionales que han sido d
 
 Proporciona información de contacto para que los usuarios puedan comunicarse contigo si tienen preguntas, problemas o comentarios sobre el proyecto.
 
-Recuerda que esta es solo una estructura básica y puedes personalizarla según las necesidades de tu proyecto.
+Recuerda que esta es solo una estructura básica y puedes personalizarla según las necesidades de tu proyecto. Además, asegúrate de proporcionar enlaces y recursos útiles en cada sección para que los usuarios puedan acceder a la información relevante de manera rápida y sencilla.
