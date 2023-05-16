@@ -1,117 +1,75 @@
-import cyberpi
+import cyberpi 
+import pygame
 import time
-import event
-import mbuild_modules.starter_shield as starter_shield
 
-velocidad_giro =100
-velocidad_giro_rapido = 150
-velocidad_avanzar = 80
-velocidad_retroceso = 50
+# Inicializar pygame
+pygame.init()
 
-#lista de estádos del sensor de color.
-#izquierda = [3,7,11]
-#derecha = [14,13,12]
-#medio = [0,1,2,4,5,6,8,9,10] #quitar 0
+# Configuración de la pantalla
+screen_width = 640
+screen_height = 480
+screen = pygame.display.set_mode((screen_width, screen_height))
 
-izquierda = [8, 12, 4]
-derecha = [1, 2, 3]
-izquierdaRapido = [8]
-izquierdaLento = [12, 4]
-derechaRapido = [1]
-derechaLento = [2, 3]
-medio = [6, 15]
+# Bandera para el estado de cada tecla
+key_up = False
+key_down = False
+key_left = False
+key_right = False
 
+# Bucle principal
+running = True
+while running:
+    # Manejar eventos
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                print("Se presionó la barra espaciadora.")
+                print(cyberpi.quad_rgb_sensor.get_line_sta(index = 1))
+                for i in range(3):
+                    print(cyberpi.ultrasonic2.get(index = 1))
+            elif event.key == pygame.K_UP:
+                key_up = True
+            elif event.key == pygame.K_DOWN:
+                key_down = True
+            elif event.key == pygame.K_LEFT:
+                key_left = True
+            elif event.key == pygame.K_RIGHT:
+                key_right = True
+            elif event.key == pygame.K_x:
+                cyberpi.mbot2.servo_set(180, 1)
+                time.sleep(2)
+                cyberpi.mbot2.servo_set(0, 1)
+                
+                
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP:
+                key_up = False
+            elif event.key == pygame.K_DOWN:
+                key_down = False
+            elif event.key == pygame.K_LEFT:
+                key_left = False
+            elif event.key == pygame.K_RIGHT:
+                key_right = False
 
-def seguidor_lineas():
-    estado_linea = cyberpi.quad_rgb_sensor.get_line_sta(1)
-    #si el sensor está viendo solo una linea a la derecha 
-    if estado_linea in izquierda: 
-        if estado_linea in izquierdaLento:
-            cyberpi.mbot2.EM_set_speed(velocidad_avanzar, "em1")
-            cyberpi.mbot2.EM_set_speed(-velocidad_giro, "em2")
-        elif estado_linea in izquierdaRapido:
-            cyberpi.mbot2.EM_set_speed(velocidad_giro_rapido, "em1")
-            cyberpi.mbot2.EM_set_speed(-velocidad_avanzar, "em2")
-    
-    # si el sensor está viendo a la derecha
-    if estado_linea in derecha: 
-        if estado_linea in derechaLento:
-            cyberpi.mbot2.EM_set_speed(velocidad_avanzar, "em1")
-            cyberpi.mbot2.EM_set_speed(-velocidad_giro, "em2")
-        elif estado_linea in derechaRapido:
-            cyberpi.mbot2.EM_set_speed(velocidad_avanzar, "em1")
-            cyberpi.mbot2.EM_set_speed(-velocidad_giro_rapido, "em2")
-            
-            
-            
-    #si el sensor va a la izquierda
-    elif estado_linea in izquierda: 
-        cyberpi.mbot2.EM_set_speed(-velocidad_giro, "em2")
-        cyberpi.mbot2.EM_set_speed(velocidad_avanzar, "em1")
-    #si el sensor está viendo a la derecha 
-    elif estado_linea in derecha: 
-        cyberpi.mbot2.EM_set_speed(velocidad_giro, "em1")
-        cyberpi.mbot2.EM_set_speed(-velocidad_avanzar, "em2")
-    #si el sensor no está viendo nada
-    #else: 
-     #   cyberpi.mbot2.EM_set_speed((-velocidad_retroceso), "em1")
-      #  cyberpi.mbot2.EM_set_speed((velocidad_retroceso), "em2")
+    # Realizar acciones según el estado de cada tecla
+    if key_up:
+        print("Se está presionando la flecha hacia arriba.")
+        cyberpi.mbot2.forward(100)
+    elif key_down:
+        print("Se está presionando la flecha hacia abajo.")
+        cyberpi.mbot2.backward(100)
+    elif key_left:
+        print("Se está presionando la flecha hacia la izquierda.")
+        cyberpi.mbot2.turn_left(100)
+    elif key_right:
+        print("Se está presionando la flecha hacia la derecha.")
+        cyberpi.mbot2.turn_right(100)
+    else: 
+        cyberpi.mbot2.forward(0)
+    # Actualizar pantalla
+    pygame.display.flip()
 
-def ver_colores():
-    if cyberpi.quad_rgb_sensor.is_color("r", "R1", 1) == True: 
-        cyberpi.console.println("rojo")
-    if cyberpi.quad_rgb_sensor.is_color("b", "R1", 1) == True: 
-        cyberpi.console.println("azul")
-    if cyberpi.quad_rgb_sensor.is_color("g", "R1", 1) == True: 
-        cyberpi.console.println("verde")
-
-def girar_robot(velocidad, aceleracion, duracion):
-    # Aquí iría el código que hace girar al robot
-    
-    velocidad_giro = 0
-    tiempo_inicial = time.time()
-    
-    while time.time() - tiempo_inicial < duracion:
-        # Aumentamos gradualmente la velocidad de giro
-        velocidad_giro += velocidad * aceleracion * (time.time() - tiempo_inicial)
-        
-        # Aquí iría el código que utiliza la velocidad de giro para hacer girar al robot
-    
-    # Aquí iría el código que finaliza el giro del robot
-    
-    return velocidad_giro
-
-def ultrasonido(): 
-    return cyberpi.ultrasonic2.get(1)
-    
-def abrazo():
-    time.sleep(1)
-    cyberpi.mbot2.servo_set(75, 1)
-    cyberpi.mbot2.servo_set(105, 2)
-    
-def reset_brazos(): 
-    time.sleep(1)
-    cyberpi.mbot2.servo_set(180, 1)
-    cyberpi.mbot2.servo_set(-180, 2)
-
-    
-
-@event.is_press('a')
-def is_btn_press():
-    time.sleep(1)
-    while True:
-        seguidor_lineas()
-@event.is_press('b')
-def is_btn_press1():
-    reset_brazos()
-    cyberpi.mbot2.forward(100, 1)
-    abrazo()
-    time.sleep(1)
-    cyberpi.mbot2.turn(90, 100)
-    cyberpi.mbot2.forward(100, 1)
-    reset_brazos()
-    cyberpi.mbot2.backward(100, 1)
-    cyberpi.mbot2.turn(-90, 100)
-    cyberpi.mbot2.backward(100, 1)
-    return 0 
-    
+# Salir de pygame
+pygame.quit()
