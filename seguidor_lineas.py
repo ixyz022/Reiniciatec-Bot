@@ -2,6 +2,7 @@ import cyberpi
 import time
 import mbuild_modules.starter_shield as starter_shield
 
+
 velocidad_giro = 150
 velocidad_giro_rapido = 160
 velocidad_avanzar = 50
@@ -61,12 +62,12 @@ def ultrasonido():
 # def elementos()
     
 
-@event.is_press('a')
+@cyberpi.event.is_press('a')
 def is_btn_press():
     time.sleep(1)
     while True:
         seguidor_lineas()
-@event.is_press('b')
+@cyberpi.event.is_press('b')
 def is_btn_press1():
     while True: 
         time.sleep(1)
