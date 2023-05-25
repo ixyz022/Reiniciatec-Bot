@@ -31,8 +31,6 @@ La documentación está en inglés, pero estamos trabajando en una traducción. 
    - El servo de la cabeza gire mientras el brazo se mueve.
 3. Que el robot pueda seguir líneas mientras realiza otra acción.
 
-**Nota:** Anteriormente ya era posible realizar estas acciones por medio de eventos, pero no es lo que se está investigando para este apartado.
-
 4. Estandarizar un método para optimizar la funcionalidad del movimiento correcto del robot, que permita mayores usos de reutilización. Por ejemplo:
    - Que permita bailar y moverse al mismo tiempo.
    - Que funcione para seguir las líneas y movimientos fuera de las líneas.
