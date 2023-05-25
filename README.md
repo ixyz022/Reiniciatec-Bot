@@ -10,10 +10,10 @@ El siguiente texto tiene por objeto dejar constancia de las tareas de programaci
 
 La documentación del robot se encuentra en los siguientes enlaces:
 
-- [APIs for CyberPi](https://education.makeblock.com/api-reference/cyberpi/)
-- [APIs for mBuild Modules](https://education.makeblock.com/api-reference/mbuild/)
-- [APIs for Extension Boards](https://education.makeblock.com/api-reference/extension-board/)
-- [APIs for Function Extension](https://education.makeblock.com/api-reference/function-extension/)
+- [APIs for CyberPi](https://education.makeblock.com/help/mblock-python-editor-python-api-documentation-for-cyberpi/)
+- [APIs for mBuild Modules](https://education.makeblock.com/help/mblock-python-editor-apis-for-mbuild-modules)
+- [APIs for Extension Boards](https://education.makeblock.com/help/mblock-python-editor-apis-for-extension-boards)
+- [APIs for Function Extension](https://education.makeblock.com/help/mblock-python-editor-apis-for-function-extension)
 
 La documentación está en inglés, pero estamos trabajando en una traducción. Sin embargo, para el momento en que esté lista, necesitamos que todos ya estén más o menos habituados con la programación del robot.
 
