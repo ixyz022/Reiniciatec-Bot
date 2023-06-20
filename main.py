@@ -66,12 +66,14 @@ def etapa3():
     giro360(40, 2.8)
     
 def etapa4():
+    giro360(40, 1.4)
     comprobacion = True
     white = "0xffffff"
     while (True):
         variable1 = cp.quad_rgb_sensor.get_color(1, index = 1)
         comprobacion = False if variable1 != white else comprobacion
         seguidor_lineas(comprobacion)
+    
 
 @cp.event.receive("levantar")
 def etapa3dot5():
