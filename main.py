@@ -9,6 +9,37 @@ velocidadBaile1 = 30
 ################# Definicion de funciones #################
 ###########################################################
 
+#################### Funciones Acto 1 #####################
+
+# Posicion inicial del robot, donde este simula dormir
+def acto1_posicion_inicial():
+    m.servo_set(5, 1) # Mover brazo
+    m.servo_set(145, 2) # Cerrar garra
+    m.servo_set(60, 3) # Girar cabeza
+    m.servo_set(130, 4) # Mover cuello
+    
+# Funcion que declara los movimientos de despertar del robot
+def despertar(): 
+    cp.broadcast("subir_cuello_async") 
+    """
+    cp.broadcast("bajar_brazo")
+    servo_lento(1, 90, 0.05, 3)
+    time.sleep(1)
+    for i in range(5):
+        cp.ultrasonic2.play("happy")
+    """
+        
+# Funcion que mueve un servo en especifico de manera lenta
+def servo_lento(incremento, target, delay, servo):
+    estado = m.servo_get(servo)
+    if target < estado :
+        incremento = incremento*(-1)
+    
+    while target != estado: 
+        m.servo_add(incremento, servo)
+        estado = estado + incremento 
+        time.sleep(delay)
+
 # Mover unitariamente un servo 
 def moverServo(posicion, servo):
     cp.mbot2.servo_set(posicion, servo)
@@ -98,24 +129,6 @@ def posicion_incial():
     cp.ultrasonic2.set_bri(0,"all", 1)
     cp.reset_yaw()
     cp.console.println(cp.get_yaw())
-    
-# Posicion para simular dormir
-def posicion_dormir():
-    m.servo_set(5, 1)
-    m.servo_set(130, 2)
-    m.servo_set(60, 3)
-    m.servo_set(120, 4)
-    
-# Mover lentamente un servo
-def servo_lento(incremento, target, delay, servo):
-    estado = m.servo_get(servo)
-    if target < estado :
-        incremento = incremento*(-1)
-    
-    while target != estado: 
-        m.servo_add(incremento, servo)
-        estado = estado + incremento 
-        time.sleep(delay)
 
 # Cepillarse
 def cepillar(iteracion): 
@@ -145,15 +158,6 @@ def bañarse():
     m.servo_set(70, 4)
     time.sleep(0.5)
     si(5)
-
-# Subrutina del despertar del robot
-def despertar(): 
-    cp.broadcast("arriba")
-    cp.broadcast("bajar_brazo")
-    servo_lento(1, 90, 0.05, 3)
-    time.sleep(1)
-    for i in range(5):
-        cp.ultrasonic2.play("happy")
 
 
 #subrutina de que el robot va a encontrar el cepillo. #para estoy se utilizará el giroscopio. 
@@ -211,11 +215,14 @@ def etapa4():
 ################## Definicion de eventos ##################
 ###########################################################      
 
-@cp.event.receive("arriba")
-def arriba():
-    for i in range(30):
+##################### Eventos Acto 1 ######################
+
+# Mover el cuello del robot hacia arriba 90° de forma asincronica
+@cp.event.receive("subir_cuello_async")
+def subir_cuello_async():
+    while (m.servo_get(4) != 90): # Mientras la cabeza no este en el centro seguria posicionandose
+        time.sleep(0.01)
         m.servo_add(-1, 4)
-        time.sleep(0.05)
     
 @cp.event.receive("bajar_brazo")
 def bajar_brazo(): 
@@ -281,11 +288,16 @@ def no2():
 ########################## Actos ##########################
 ###########################################################            
 
-#ACTO 1, 2 
+
+######################## Acto 1 ########################### 
+
 def acto1(): 
-    posicion_dormir()
+    
+    acto1_posicion_inicial() # REVISADA
     time.sleep(3)
     despertar()
+
+    """
     moverServo(20, 2) # cerrar garra
     ir_al_cepillo()
     m.drive_speed(0,0)
@@ -299,13 +311,19 @@ def acto1():
     time.sleep(1)
     m.servo_set(20, 1)
     m.turn(-90,30)
+    """
+    
+######################## Acto 2 ###########################     
+
+def acto2(): 
     while True: 
         follow_line()
         if cp.quad_rgb_sensor.get_line_sta(1) == 0:
             break
     m.drive_speed(0,0)
 
-#acto 3 
+######################## Acto 3 ########################### 
+
 def acto3():
     #el robot se acerca lentamente a el pez y lo toca
     m.servo_set(20,"S1")
@@ -380,7 +398,8 @@ def acto3():
     time.sleep(1)
     m.turn(-190, 30)
 
-#ACTO 4 
+######################## Acto 4 ########################### 
+ 
 def acto4():
     #El robot comienza con la garra el brazo a 90°, con la mirada hacia abajo, haciendo “no” con la cabeza. 
     m.servo_set(130, 4)
@@ -415,15 +434,16 @@ def acto4():
             break
     m.forward(0)
 
+######################## Acto 5 ########################### 
 
-# ACTO 5
 def acto5():
     etapa2()
     time.sleep(1) # espera
     etapa3()
     time.sleep(1) # espera
 
-#acto 6
+######################## Acto 6 ########################### 
+
 def acto6(): 
     m.straight(8, 15)
     m.turn(-60, 15)
@@ -446,10 +466,6 @@ def acto6():
     m.straight(40, 40)
     movimientosBaile()
     
-    
-    
-
-    
 ###########################################################
 ################## Eventos de la rutina ###################
 ###########################################################      
@@ -458,11 +474,13 @@ def acto6():
 @cp.event.is_press("a")
 def rutina(): 
     acto1()
+    """
+    acto2()
     acto3()
     acto4()
     acto5()
     acto6()
-    #ponemos la posición para pasar al acto 3 
+    """
     
 
     
