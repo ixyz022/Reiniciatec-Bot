@@ -20,7 +20,11 @@ def acto1_posicion_inicial():
     
 # Funcion que declara los movimientos de despertar del robot
 def despertar(): 
-    cp.broadcast("subir_cuello_async") 
+    cp.broadcast("subir_cuello_async")
+    time.sleep(1.2)
+    cp.broadcast("bajar_brazo_async") 
+    
+    cp.broadcast("centrar_cabeza_async") 
     """
     cp.broadcast("bajar_brazo")
     servo_lento(1, 90, 0.05, 3)
@@ -217,24 +221,37 @@ def etapa4():
 
 ##################### Eventos Acto 1 ######################
 
-# Mover el cuello del robot hacia arriba 90° de forma asincronica
+# Mover el cuello del robot hasta 90° de forma asincronica
 @cp.event.receive("subir_cuello_async")
 def subir_cuello_async():
     while (m.servo_get(4) != 90): # Mientras la cabeza no este en el centro seguria posicionandose
         time.sleep(0.01)
         m.servo_add(-1, 4)
-    
-@cp.event.receive("bajar_brazo")
-def bajar_brazo(): 
+
+# Mover el brazo del robot hasta 90°  
+@cp.event.receive("bajar_brazo_async")
+def bajar_brazo_async(): 
+    while (m.servo_get(1) != 90): # Mientras la cabeza no este en el centro seguria posicionandose
+        time.sleep(0.05)
+        m.servo_add(2, 1)
+"""
     for i in range(42):
         m.servo_add(2, 1)
         time.sleep(0.05)
-    time.sleep(1)
+"""
+@cp.event.receive("abrir_y_cerrar_garra_async")
+def abrir_y_cerrar_garra_async(): 
     for i in range(3):
         m.servo_set(30, 2)
         time.sleep(0.5)
         m.servo_set(130,2)
         time.sleep(0.5)
+        
+@cp.event.receive("centrar_cabeza_async")
+def centrar_cabeza_async(): 
+    while (m.servo_get(3) != 180): # Mientras la cabeza no este en el centro seguria posicionandose
+        time.sleep(0.05)
+        m.servo_add(1, 3)
         
 #mover la cabeza al recibir la señal 
 @cp.event.receive("cabeza")
@@ -294,7 +311,7 @@ def no2():
 def acto1(): 
     
     acto1_posicion_inicial() # REVISADA
-    time.sleep(3)
+    time.sleep(1)
     despertar()
 
     """
