@@ -24,14 +24,13 @@ def motores(velocidad1, velocidad2 = None):
     cp.mbot2.EM_set_speed(velocidad1, "em1")
     cp.mbot2.EM_set_speed(velocidad2, "em2")
 
-"""
+
 #agarrar
 def agarrar():
     if m.servo_get(2) > 100: 
         m.servo_set(20, 2)
     else:
         m.servo_set(135, 2)
-"""
 
 # Accion de afirmacion
 def si(iteracion):
@@ -77,14 +76,18 @@ def follow_line():
     # Controlamos los motores
     m.drive_speed(motor_left_speed, motor_right_speed)
 
-"""
-#agarrar
-def agarrar():
-    if m.servo_get(2) > 100: 
-        m.servo_set(20, 2)
-    else:
-        m.servo_set(135, 2)
-"""
+#ajustar posición del robot respecto de la linea
+def ajustar():
+    offset = cp.quad_rgb_sensor.get_offset_track(index = 1)  # Obtenemos el offset
+    while not(offset > -20 and offset < 20):
+        if offset > -20: 
+            m.drive_speed(-10, -10)
+            offset = cp.quad_rgb_sensor.get_offset_track(index = 1) 
+        if offset < 20: 
+            m.drive_speed(10, 10)
+            offset = cp.quad_rgb_sensor.get_offset_track(index = 1)
+        offset = cp.quad_rgb_sensor.get_offset_track(index = 1)
+    m.forward(0)
     
 # Posicion inicial de performance 
 def posicion_incial(): 
@@ -168,12 +171,12 @@ def moverCorto(velocidad, tiempo):
 def etapa1():
     moverServo(90, 3) # Mover cabeza
     moverServo(90, 4) # Mover cuello
-    moverServo(90, "em1") # brazo central en el medio
-    moverServo(50, "em2") # abrir garra
-    time.sleep(1) # espera para poner el prop
-    moverServo(90, "em2") # cierra la garra
-    time.sleep(0.5) # espera para poner el prop
-    moverServo(70, "em1") # brazo central en el medio
+    #moverServo(90, "em1") # brazo central en el medio
+    #moverServo(50, "em2") # abrir garra
+    #time.sleep(1) # espera para poner el prop
+    #moverServo(90, "em2") # cierra la garra
+    #time.sleep(0.5) # espera para poner el prop
+    #moverServo(70, "em1") # brazo central en el medio
 
 # Sigue la linea hasta la zona de reciclaje dejando la garra a traves de la compuerta
 def etapa2():
@@ -186,11 +189,11 @@ def etapa2():
 def etapa3():
     m.servo_set(90, 1)
     m.forward(30, 1)
-    moverServo(50, "em2") # abrir garra
+    moverServo(20, "em2") # abrir garra
     time.sleep(1) # espera para poner el prop
-    moverServo(90, "em2") # cierra la garra
     cp.broadcast("levantar")
     moverCorto(-30, 1) # Moverse hacia atras un segundo
+    moverServo(90, "em2") # cierra la garra
     m.servo_set(20, 1)
     #giro360(40, 2.8)
     m.turn(360, 50)
@@ -286,14 +289,96 @@ def acto1():
     moverServo(20, 2) # cerrar garra
     ir_al_cepillo()
     m.drive_speed(0,0)
-    moverServo(20, 2) # cerrar garra
+    moverServo(130, 2) # cerrar garra
     bañarse()
+    m.servo_set(40, 1)
     m.turn(90, 30)
+    m.servo_set(90, 1)
+    time.sleep(1)
     moverServo(20, 2) # cerrar garra
+    time.sleep(1)
     m.servo_set(20, 1)
     m.turn(-90,30)
     while True: 
         follow_line()
+        if cp.quad_rgb_sensor.get_line_sta(1) == 0:
+            break
+    m.drive_speed(0,0)
+
+#acto 3 
+def acto3():
+    #el robot se acerca lentamente a el pez y lo toca
+    m.servo_set(20,"S1")
+    m.servo_set(130,"S2")
+    m.servo_set(90,"S3")
+    m.servo_set(120,"S4")
+    time.sleep(1)
+    m.forward(10, 2)
+    ajustar()
+    time.sleep(1)
+    m.servo_set(20,"S1")
+    for count in range(28):
+        m.servo_add(2,"S1")
+        time.sleep(0.1)
+
+    m.servo_set(20,"S1")
+    time.sleep(0.5)
+    m.turn(110)
+    m.servo_set(90,"S4")
+    for count2 in range(7):
+        m.servo_set(120,"S3")
+        time.sleep(0.3)
+        m.servo_set(60,"S3")
+        time.sleep(0.3)
+
+    m.turn(-120)
+    m.servo_set(35,"S2")
+
+    time.sleep(1)
+    for count3 in range(17):
+        m.servo_add(4,"S1")
+        time.sleep(0.1)
+        
+    #el robot se acerca a tomar el pez
+    m.straight(3,20)
+    time.sleep(0.3)
+    m.servo_set(130,"S2")
+    time.sleep(0.7)
+    m.servo_set(40, 1)
+    time.sleep(1)
+    
+    #sigue lineas hasta la curva
+    while True:
+        follow_line()
+        if cp.quad_rgb_sensor.is_line("l2", 1) == 1: 
+            break
+    #avanza lentamente hasta ver la curva
+    m.straight(7, 30)
+    time.sleep(1)
+    m.turn(-100, 30)
+    ajustar()
+    time.sleep(1)
+    
+    
+    #sigue lineas hasta el hospital
+    while True: 
+        follow_line()
+        if cp.quad_rgb_sensor.get_line_sta(1) == 0:
+            break
+    m.drive_speed(0,0)
+    
+    for i in range(25):
+        m.servo_add(2, 1)
+        time.sleep(0.1)
+    time.sleep(1)
+    m.servo_set(20, 2)
+    time.sleep(1)
+    
+    #devolverse 
+    m.straight(-4, 20)
+    m.servo_set(5, 1)
+    time.sleep(1)
+    m.turn(-190, 30)
 
 #ACTO 4 
 def acto4():
@@ -317,7 +402,7 @@ def acto4():
     while cp.quad_rgb_sensor.is_color("y",1) != True: 
         follow_line()
     m.forward(0)
-    moverServo(20, 2) # cerrar garra
+    agarrar()
     time.sleep(1)
     #m.servo_set(20, 2)
     m.servo_set(40, 1)
@@ -329,7 +414,7 @@ def acto4():
         if cp.quad_rgb_sensor.is_line("any", 1):
             break
     m.forward(0)
-    cp.console.println("llegué")
+
 
 # ACTO 5
 def acto5():
@@ -337,8 +422,34 @@ def acto5():
     time.sleep(1) # espera
     etapa3()
     time.sleep(1) # espera
-    etapa4() 
 
+#acto 6
+def acto6(): 
+    m.straight(8, 15)
+    m.turn(-60, 15)
+    m.straight(4, 15)
+    ajustar()
+    m.straight(3,15)
+    ajustar()
+    m.straight(2, 15)
+    ajustar()
+    m.forward(0)
+    m.servo_set(20, 2)
+    for i in range(35):
+        m.servo_add(2, 1)
+        time.sleep(0.05)
+    m.servo_set(130, 2)
+    time.sleep(1)
+    m.servo_set(20, 1)
+    m.straight(-20, 20)
+    m.turn(-60, 20)
+    m.straight(40, 40)
+    movimientosBaile()
+    
+    
+    
+
+    
 ###########################################################
 ################## Eventos de la rutina ###################
 ###########################################################      
@@ -347,11 +458,17 @@ def acto5():
 @cp.event.is_press("a")
 def rutina(): 
     acto1()
+    acto3()
+    acto4()
+    acto5()
+    acto6()
+    #ponemos la posición para pasar al acto 3 
+    
 
     
 @cp.event.is_press("b")
 def callback2(): 
-    cp.console.println(cp.get_yaw())
+    acto3()
     
     
 @cp.event.is_press("up")
