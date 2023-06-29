@@ -158,8 +158,11 @@ def despertar():
 
 #subrutina de que el robot va a encontrar el cepillo. #para estoy se utilizará el giroscopio. 
 def ir_al_cepillo():
-    while cp.quad_rgb_sensor.get_line_sta(0, 1):
+    
+    while True:
         follow_line()
+        if cp.quad_rgb_sensor.get_line_sta(1) == 0: 
+            break
         
 # Mueve las ruedas una distancia que depende del tiempo y la velocidad
 def moverCorto(velocidad, tiempo):
@@ -289,16 +292,18 @@ def acto1():
     moverServo(20, 2) # cerrar garra
     ir_al_cepillo()
     m.drive_speed(0,0)
+    m.straight(4, 30)
+    ajustar()
     moverServo(130, 2) # cerrar garra
     bañarse()
     m.servo_set(40, 1)
-    m.turn(90, 30)
+    m.turn(90, 40)
     m.servo_set(90, 1)
     time.sleep(1)
     moverServo(20, 2) # cerrar garra
     time.sleep(1)
     m.servo_set(20, 1)
-    m.turn(-90,30)
+    m.turn(-90,40)
     while True: 
         follow_line()
         if cp.quad_rgb_sensor.get_line_sta(1) == 0:
@@ -322,16 +327,18 @@ def acto3():
         time.sleep(0.1)
 
     m.servo_set(20,"S1")
-    time.sleep(0.5)
-    m.turn(110)
+    m.forward(0)
+    time.sleep(1)
+    m.turn(110, 50)
     m.servo_set(90,"S4")
     for count2 in range(7):
         m.servo_set(120,"S3")
         time.sleep(0.3)
         m.servo_set(60,"S3")
         time.sleep(0.3)
-
-    m.turn(-120)
+        
+    m.turn(-120, 50)
+    ajustar()
     m.servo_set(35,"S2")
 
     time.sleep(1)
@@ -354,10 +361,14 @@ def acto3():
             break
     #avanza lentamente hasta ver la curva
     m.straight(7, 30)
-    time.sleep(1)
-    m.turn(-100, 30)
+    time.sleep(0.2)
+    m.turn(-50, 20)
+    while True: 
+        m.drive_speed(-30,-30)
+        if cp.quad_rgb_sensor.is_line("r1", 1) == 1: 
+            break
     ajustar()
-    time.sleep(1)
+    #time.sleep(1)
     
     
     #sigue lineas hasta el hospital
@@ -366,6 +377,8 @@ def acto3():
         if cp.quad_rgb_sensor.get_line_sta(1) == 0:
             break
     m.drive_speed(0,0)
+    time.sleep(1)
+    m.straight(5, 40)
     
     for i in range(25):
         m.servo_add(2, 1)
@@ -373,19 +386,22 @@ def acto3():
     time.sleep(1)
     m.servo_set(20, 2)
     time.sleep(1)
+    #m.straight(-5, 40)
+    m.forward(0)
+    time.sleep(1)
     
     #devolverse 
     m.straight(-4, 20)
     m.servo_set(5, 1)
     time.sleep(1)
-    m.turn(-190, 30)
+    m.turn(-190, 40)
 
 #ACTO 4 
 def acto4():
     #El robot comienza con la garra el brazo a 90°, con la mirada hacia abajo, haciendo “no” con la cabeza. 
     m.servo_set(130, 4)
     m.servo_set(90, 3)
-    m.servo_set(90, 1)
+    m.servo_set(20, 1)
     m.servo_set(20, 2)
     time.sleep(1)
     cp.broadcast("no2")
@@ -395,10 +411,14 @@ def acto4():
         if cp.quad_rgb_sensor.get_line_sta(1) == 0: 
             cp.stop_other()
             break
+        
     m.servo_set(90, 3)
     m.servo_set(90, 4)
-    m.forward(50, 0.2)    
-    m.turn(-90, 20)
+    m.forward(50, 0.2) 
+    m.forward(0)
+    time.sleep(1)
+    m.turn(-100, 20)
+    
     while cp.quad_rgb_sensor.is_color("y",1) != True: 
         follow_line()
     m.forward(0)
