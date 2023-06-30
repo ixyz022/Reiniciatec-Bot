@@ -183,11 +183,10 @@ def etapa1():
 
 # Sigue la linea hasta la zona de reciclaje dejando la garra a traves de la compuerta
 def etapa2():
-    while (True):
+    while cp.quad_rgb_sensor.is_color("purple","any") != True: 
         follow_line()
-        if cp.quad_rgb_sensor.is_color("r","any", 1): 
-            break
-    m.drive_speed(0,0)
+    m.forward(0)
+    time.sleep(5)
 
 def etapa3():
     m.servo_set(90, 1)
@@ -294,13 +293,17 @@ def acto1():
     m.drive_speed(0,0)
     m.straight(4, 30)
     ajustar()
-    moverServo(130, 2) # cerrar garra
+    m.servo_set(110, 1)
+    agarrar()
+    #moverServo(130, 2) # cerrar garra
+    time.sleep(0.5)
     bañarse()
     m.servo_set(40, 1)
     m.turn(90, 40)
     m.servo_set(90, 1)
     time.sleep(1)
-    moverServo(20, 2) # cerrar garra
+    #moverServo(20, 2) # cerrar garra
+    agarrar()
     time.sleep(1)
     m.servo_set(20, 1)
     m.turn(-90,40)
@@ -342,19 +345,28 @@ def acto3():
     m.servo_set(35,"S2")
 
     time.sleep(1)
-    for count3 in range(17):
+    for count3 in range(22):
         m.servo_add(4,"S1")
         time.sleep(0.1)
         
     #el robot se acerca a tomar el pez
     m.straight(3,20)
     time.sleep(0.3)
-    m.servo_set(130,"S2")
+    #m.servo_set(130,"S2")
+    agarrar()
     time.sleep(0.7)
     m.servo_set(40, 1)
+    m.servo_set(90, 3)
+    time.sleep(0.5)
+    m.servo_add(80, 3)
     time.sleep(1)
+    m.servo_add(-160, 1)
+    time.sleep(1)
+    m.servo_set(90, 3)
+    m.servo_set(120, 4)
     
     #sigue lineas hasta la curva
+    ajustar()
     while True:
         follow_line()
         if cp.quad_rgb_sensor.is_line("l2", 1) == 1: 
@@ -406,45 +418,115 @@ def acto4():
     time.sleep(1)
     cp.broadcast("no2")
     #el robot avanza lentamente por la linea
-    while cp.quad_rgb_sensor.is_color("y",1) != True: 
+    while True: 
         follow_line()
         if cp.quad_rgb_sensor.get_line_sta(1) == 0: 
             cp.stop_other()
             break
-        
+    #luego de ver la linea se pone en posición inicial y gira a la derecha. 
+    m.forward(0)
     m.servo_set(90, 3)
     m.servo_set(90, 4)
-    m.forward(50, 0.2) 
+    #antes de girar mirá hacia los barriles
+    m.servo_set(90, 1)
+    time.sleep(0.5)
+    m.servo_set(170, 3)
+    m.servo_set(90, 4)
+    time.sleep(1)
+    cp.broadcast("mirar")
+    #gira hacia los barriles
+    m.forward(50, 0.2)
     m.forward(0)
     time.sleep(1)
     m.turn(-100, 20)
-    
+    #sigue la linea hasta ver el color amarillo
     while cp.quad_rgb_sensor.is_color("y",1) != True: 
         follow_line()
     m.forward(0)
+    m.servo_set(110, 1)
+    m.straight(5, 20)
     agarrar()
-    time.sleep(1)
+    time.sleep(0.7)
+    #m.straight(-10,20)
+    
+    m.servo_set(30, 1)
+    
+    time.sleep(0.5)
     #m.servo_set(20, 2)
-    m.servo_set(40, 1)
+    
     #m.backward(20, 1)
-    m.turn(-70, 40)
-    m.forward(40, 1)
+    #m.turn(-70, 40)
+    #m.forward(40, 1)
+    """
     while True: 
-        m.drive_speed(30,30)
+        #m.drive_speed(30,30)
         if cp.quad_rgb_sensor.is_line("any", 1):
             break
-    m.forward(0)
+    """
+
 
 
 # ACTO 5
 def acto5():
-    etapa2()
+    while True: 
+        m.drive_speed(-30, -30)
+        if cp.quad_rgb_sensor.is_line("r1", 1) == 1: 
+            break
+    while cp.quad_rgb_sensor.is_color("purple","any") != True: 
+        follow_line()
+    m.forward(0)
+    time.sleep(0.5)
+    m.servo_set(110, 1)
+    m.forward(30, 1)
+    moverServo(20, "em2") # abrir garra
+    time.sleep(1) # espera para poner el prop
+    moverCorto(-30, 1) # Moverse hacia atras un segundo
+    moverServo(90, "em2") # cierra la garra
+    m.servo_set(20, 1)
+    #giro360(40, 2.8)
+    #m.turn(360, 50)
     time.sleep(1) # espera
-    etapa3()
-    time.sleep(1) # espera
-
+    """
+    m.turn(-70, 40)
+    while True: 
+        m.drive_speed(30, -30)
+        if cp.quad_rgb_sensor.is_line("r1", 1) == 1: 
+            break
+    """
 #acto 6
 def acto6(): 
+    while True: 
+        follow_line()
+        if cp.quad_rgb_sensor.get_line_sta(1) == 0: 
+            break
+    m.forward(0)
+    ajustar()
+    m.servo_set(20,2)
+    time.sleep(1)
+    for count3 in range(22):
+        m.servo_add(4,"S1")
+        time.sleep(0.1)
+        
+    #el robot se acerca a tomar el pez
+    m.straight(3,20)
+    time.sleep(0.3)
+    #m.servo_set(130,"S2")
+    agarrar()
+    time.sleep(0.7)
+    m.servo_set(30, 1)
+    time.sleep(0.5)
+    m.turn(-70, 40)
+    m.straight(45, 60)
+    for i in range(35):
+        m.servo_add(2, 1)
+        time.sleep(0.1)
+    time.sleep(0.5)
+    agarrar()
+    m.straight(-10, 60)
+    movimientosBaile()
+    
+    
+    """
     m.straight(8, 15)
     m.turn(-60, 15)
     m.straight(4, 15)
@@ -465,7 +547,7 @@ def acto6():
     m.turn(-60, 20)
     m.straight(40, 40)
     movimientosBaile()
-    
+    """
     
     
 
@@ -505,6 +587,12 @@ def giro_giroscopio():
 def left(): 
     pass
 
+@cp.event.receive("mirar")
+def mirar_izq():
+    for i in range(20):
+        m.servo_add(-4, 3)
+        time.sleep(0.1)
+        
 """
 #obtener angulo yaw
 @cp.event.is_press('right')
