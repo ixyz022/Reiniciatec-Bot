@@ -390,16 +390,19 @@ def acto3():
     
     m.servo_set(40, "S1") # sube la garra
     
-    m.servo_set(90,"S3") # Movimiento de cuello horizontal   
-    """
+    m.servo_set(120,"S3") # mirar al publico
+    m.servo_set(60,"S3") # mirar al pescado
+    time.sleep(1)
+    m.servo_set(120,"S3") # mirar al publico
+    m.servo_set(60,"S3") # mirar al pescado
     
+    m.servo_set(90,"S3") # Mirar adelante
     
     #sigue lineas hasta la curva
     while True:
         follow_line()
         if cp.quad_rgb_sensor.is_line("l2", 1) == 1: 
-            break
-        
+            break  
     #avanza lentamente hasta ver la curva
     m.straight(7, 30)
     
@@ -442,7 +445,6 @@ def acto3():
     m.servo_set(5, 1)
     time.sleep(1)
     m.turn(-190, 40)
-    """
 
 #ACTO 4 
 def acto4():
