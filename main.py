@@ -279,6 +279,14 @@ def no2():
         servo_lento(10, 120, 0.05, 3 )
         time.sleep(0.1)
         
+@cp.event.receive("servo_lento_cuello_acto3")      
+def servo_lento_cuello_acto3():
+    c = 0
+    while c != 15:
+        m.servo_add(2,"S4")
+        time.sleep(0.2)
+        c+=1
+        
 ###########################################################
 ########################## Actos ##########################
 ###########################################################            
@@ -452,46 +460,6 @@ def acto4():
     time.sleep(1)
     cp.broadcast("no2")
     #el robot avanza lentamente por la linea
-    while cp.quad_rgb_sensor.is_color("y",1) != True: 
-        follow_line()
-        if cp.quad_rgb_sensor.get_line_sta(1) == 0: 
-            cp.stop_other()
-            break
-        
-    m.servo_set(90, 3)
-    m.servo_set(90, 4)
-    m.forward(50, 0.2) 
-    m.forward(0)
-    time.sleep(1)
-    m.turn(-100, 20)
-    
-    while cp.quad_rgb_sensor.is_color("y",1) != True: 
-        follow_line()
-    m.forward(0)
-    agarrar()
-    time.sleep(1)
-    #m.servo_set(20, 2)
-    m.servo_set(40, 1)
-    #m.backward(20, 1)
-    m.turn(-70, 40)
-    m.forward(40, 1)
-    while True: 
-        m.drive_speed(30,30)
-        if cp.quad_rgb_sensor.is_line("any", 1):
-            break
-    m.forward(0)
-
-
-#ACTO 4 
-def acto4():
-    #El robot comienza con la garra el brazo a 90°, con la mirada hacia abajo, haciendo “no” con la cabeza. 
-    m.servo_set(130, 4)
-    m.servo_set(90, 3)
-    m.servo_set(20, 1)
-    m.servo_set(20, 2)
-    time.sleep(1)
-    cp.broadcast("no2")
-    #el robot avanza lentamente por la linea
     while True: 
         follow_line()
         if cp.quad_rgb_sensor.get_line_sta(1) == 0: 
@@ -597,34 +565,10 @@ def acto6():
     time.sleep(0.5)
     agarrar()
     m.straight(-10, 60)
+    
+    m.turn(-60, 40)
+    m.straight(15, 60)
     movimientosBaile()
-    
-    
-    """
-    m.straight(8, 15)
-    m.turn(-60, 15)
-    m.straight(4, 15)
-    ajustar()
-    m.straight(3,15)
-    ajustar()
-    m.straight(2, 15)
-    ajustar()
-    m.forward(0)
-    m.servo_set(20, 2)
-    for i in range(35):
-        m.servo_add(2, 1)
-        time.sleep(0.05)
-    m.servo_set(130, 2)
-    time.sleep(1)
-    m.servo_set(20, 1)
-    m.straight(-20, 20)
-    m.turn(-60, 20)
-    m.straight(40, 40)
-    movimientosBaile()
-    """
-    
-    
-
     
 ###########################################################
 ################## Eventos de la rutina ###################
