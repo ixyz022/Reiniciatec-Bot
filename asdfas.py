@@ -398,6 +398,8 @@ def acto3():
     
     m.servo_set(90,"S3") # Mirar adelante
     
+    si(5)
+    
     #sigue lineas hasta la curva
     while True:
         follow_line()
